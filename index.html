@@ -1,0 +1,1949 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="社团智能匹配、报名、讨论与管理的一体化平台（本地演示）" />
+    <title>社团引力波 · 高校社团智能匹配平台</title>
+    <style>
+      :root{
+        --bg:#F7F8FA;--surface:#FFF;--text:#0F172A;--muted:#64748B;--border:#E2E8F0;
+        --primary:#2563EB;--primary-2:#1D4ED8;--accent:#10B981;--danger:#DC2626;--warn:#F59E0B;
+        --r:16px;--shadow:0 10px 30px rgba(2,6,23,.08);--shadow2:0 8px 20px rgba(2,6,23,.10);
+      }
+      *{box-sizing:border-box}
+      html,body{height:100%}
+      body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif;color:var(--text);background:radial-gradient(1200px 600px at 20% 0%, rgba(37,99,235,.18), transparent 60%),radial-gradient(900px 600px at 90% 10%, rgba(16,185,129,.14), transparent 55%),var(--bg)}
+      a{color:inherit;text-decoration:none}
+      button,input,select,textarea{font:inherit}
+      .container{max-width:1200px;margin:0 auto;padding:16px}
+      @media (min-width:768px){.container{padding:24px}}
+      .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden}
+      .card-h{padding:14px 14px 0}
+      .card-b{padding:14px}
+      @media (min-width:768px){.card-h{padding:18px 18px 0}.card-b{padding:18px}}
+      .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+      .col{display:flex;flex-direction:column;gap:10px}
+      .grid{display:grid;gap:12px}
+      .grid-2{grid-template-columns:1fr}
+      @media (min-width:900px){.grid-2{grid-template-columns:360px 1fr;gap:18px}}
+      .muted{color:var(--muted)}
+      .h1{font-size:20px;font-weight:800;letter-spacing:.2px}
+      .h2{font-size:16px;font-weight:750}
+      .h3{font-size:14px;font-weight:700}
+      .p{font-size:14px;line-height:1.6}
+      .k{font-size:12px;color:var(--muted)}
+      .btn{border:1px solid var(--border);background:#fff;color:var(--text);padding:10px 12px;border-radius:12px;cursor:pointer;transition:.15s ease;display:inline-flex;gap:8px;align-items:center;justify-content:center}
+      .btn:hover{transform:translateY(-1px);box-shadow:var(--shadow2)}
+      .btn:disabled{opacity:.55;cursor:not-allowed;transform:none;box-shadow:none}
+      .btn-primary{background:linear-gradient(135deg,var(--primary),var(--primary-2));border-color:transparent;color:#fff}
+      .btn-danger{background:rgba(220,38,38,.08);border-color:rgba(220,38,38,.22);color:var(--danger)}
+      .btn-ghost{background:transparent}
+      .input{width:100%;padding:10px 12px;border-radius:12px;border:1px solid var(--border);outline:none;background:#fff}
+      .input:focus{border-color:rgba(37,99,235,.55);box-shadow:0 0 0 4px rgba(37,99,235,.12)}
+      .chip{padding:6px 10px;border-radius:999px;border:1px solid var(--border);background:#fff;font-size:12px;cursor:pointer;user-select:none}
+      .chip.on{border-color:rgba(37,99,235,.35);background:rgba(37,99,235,.10);color:var(--primary)}
+      .badge{padding:4px 8px;border-radius:999px;border:1px solid var(--border);font-size:12px;color:var(--muted);background:#fff}
+      .badge.ok{border-color:rgba(16,185,129,.30);background:rgba(16,185,129,.10);color:#047857}
+      .badge.warn{border-color:rgba(245,158,11,.35);background:rgba(245,158,11,.12);color:#92400E}
+      .badge.danger{border-color:rgba(220,38,38,.30);background:rgba(220,38,38,.10);color:#B91C1C}
+      .topbar{position:sticky;top:0;z-index:20;background:rgba(247,248,250,.75);backdrop-filter:blur(10px);border-bottom:1px solid rgba(226,232,240,.9)}
+      .topbar-inner{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px;max-width:1200px;margin:0 auto}
+      .brand{display:flex;align-items:center;gap:10px}
+      .logo{width:34px;height:34px;border-radius:12px;background:linear-gradient(135deg,rgba(37,99,235,.95),rgba(16,185,129,.85));box-shadow:0 10px 22px rgba(37,99,235,.20)}
+      .nav{display:flex;gap:8px;flex-wrap:wrap}
+      .nav a{padding:8px 10px;border-radius:12px;border:1px solid transparent;color:var(--muted)}
+      .nav a.active{background:rgba(37,99,235,.10);border-color:rgba(37,99,235,.18);color:var(--primary)}
+      .nav a:hover{background:rgba(2,6,23,.04);color:var(--text)}
+      .progress{height:10px;border-radius:999px;background:rgba(2,6,23,.07);overflow:hidden}
+      .progress>div{height:100%;background:linear-gradient(90deg,rgba(37,99,235,.95),rgba(16,185,129,.90))}
+      .list{display:flex;flex-direction:column;gap:12px}
+      .hr{height:1px;background:var(--border);margin:12px 0}
+      .table{width:100%;border-collapse:separate;border-spacing:0 10px}
+      .tr{background:#fff;border:1px solid var(--border)}
+      .td{padding:12px 12px}
+      .tr .td:first-child{border-top-left-radius:12px;border-bottom-left-radius:12px}
+      .tr .td:last-child{border-top-right-radius:12px;border-bottom-right-radius:12px}
+      .toast-wrap{position:fixed;right:14px;bottom:14px;display:flex;flex-direction:column;gap:10px;z-index:60}
+      .toast{min-width:240px;max-width:360px;background:#fff;border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow2);padding:12px 12px}
+      .toast .t{font-weight:700;font-size:13px}
+      .toast .d{font-size:12px;color:var(--muted);margin-top:4px;line-height:1.4}
+      .mask{position:fixed;inset:0;background:rgba(2,6,23,.45);display:flex;align-items:center;justify-content:center;z-index:70;padding:16px}
+      .modal{width:min(720px,100%);background:#fff;border-radius:18px;border:1px solid var(--border);box-shadow:var(--shadow2);overflow:hidden}
+      .modal-h{padding:14px 14px 0;display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+      .modal-b{padding:14px}
+      @media (min-width:768px){.modal-h{padding:18px 18px 0}.modal-b{padding:18px}}
+      .cover{width:100%;height:160px;border-radius:14px;border:1px solid var(--border);background:linear-gradient(135deg,rgba(37,99,235,.12),rgba(16,185,129,.10));display:flex;align-items:center;justify-content:center;color:rgba(15,23,42,.70);overflow:hidden}
+      .cover img{width:100%;height:100%;object-fit:cover;display:block}
+      .pill{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;border:1px solid var(--border);background:#fff;font-size:12px;color:var(--muted)}
+      .sep{height:10px;width:1px;background:var(--border)}
+      .empty{padding:18px;border-radius:16px;border:1px dashed rgba(100,116,139,.35);background:rgba(255,255,255,.55)}
+      .link{color:var(--primary);text-decoration:underline;text-underline-offset:3px}
+    </style>
+  </head>
+  <body>
+    <div id="app"></div>
+
+    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+    <script src="https://unpkg.com/vue-router@4/dist/vue-router.global.prod.js"></script>
+
+    <script type="module">
+      const {
+        createApp,
+        ref,
+        reactive,
+        computed,
+        watch,
+        onMounted,
+        onBeforeUnmount,
+      } = window.Vue
+      const {
+        createRouter,
+        createWebHashHistory,
+        useRoute,
+        useRouter,
+        RouterView,
+        RouterLink,
+      } = window.VueRouter
+
+      const LS = {
+        k: {
+          v: 'csmp_v1',
+          users: 'csmp_v1_users',
+          clubs: 'csmp_v1_clubs',
+          activities: 'csmp_v1_activities',
+          applications: 'csmp_v1_applications',
+          discussions: 'csmp_v1_discussions',
+          profiles: 'csmp_v1_userProfiles',
+          session: 'csmp_v1_session',
+        },
+        read(key, fallback) {
+          try {
+            const raw = localStorage.getItem(key)
+            if (!raw) return fallback
+            return JSON.parse(raw)
+          } catch {
+            return fallback
+          }
+        },
+        write(key, val) {
+          localStorage.setItem(key, JSON.stringify(val))
+        },
+        del(key) {
+          localStorage.removeItem(key)
+        },
+      }
+
+      const uid = () =>
+        'id_' +
+        Math.random().toString(16).slice(2) +
+        '_' +
+        Date.now().toString(16) +
+        Math.random().toString(16).slice(2)
+
+      const nowIso = () => new Date().toISOString()
+
+      const fmtDT = (iso) => {
+        const d = new Date(iso)
+        const pad = (n) => (n < 10 ? '0' + n : '' + n)
+        return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`
+      }
+
+      const futureIso = (days, hour) => {
+        const d = new Date()
+        d.setDate(d.getDate() + days)
+        d.setHours(hour, 0, 0, 0)
+        return d.toISOString()
+      }
+
+      const interestTags = [
+        '科技',
+        '编程',
+        'AI',
+        '摄影',
+        '音乐',
+        '舞蹈',
+        '篮球',
+        '羽毛球',
+        '公益',
+        '创业',
+        '演讲',
+        '设计',
+      ]
+      const skillTags = ['前端', '后端', '运营', '剪辑', '写作', '主持', '绘画', '策划']
+      const timePrefs = ['工作日晚上', '周末白天', '周末晚上']
+
+      const seedIfEmpty = () => {
+        const users = LS.read(LS.k.users, null)
+        if (Array.isArray(users) && users.length > 0) return
+
+        const clubs = [
+          {
+            id: 'club_ai',
+            name: '智能创客邦',
+            description: 'AI 与编程实战社团：从入门到项目发布，结伴共创。',
+            cover:
+              'https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=' +
+              encodeURIComponent('campus club banner, students coding together, soft pastel blue and mint green, clean modern illustration, friendly lighting, minimal, high quality, 16:9') +
+              '&image_size=landscape_16_9',
+            tags: ['科技', '编程', 'AI'],
+            timePreference: '工作日晚上',
+            skillsRequired: ['前端', '后端', '策划'],
+            recruitmentInfo: '招新中：欢迎零基础/进阶同学，一起做项目与分享。',
+            managerIds: [],
+          },
+          {
+            id: 'club_photo',
+            name: '光影摄影社',
+            description: '用镜头记录校园：外拍、后期课、作品评审与展览。',
+            cover:
+              'https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=' +
+              encodeURIComponent('campus photography club banner, students holding cameras, soft light, pastel colors, clean minimal illustration, high quality, 16:9') +
+              '&image_size=landscape_16_9',
+            tags: ['摄影', '设计'],
+            timePreference: '周末白天',
+            skillsRequired: ['剪辑', '运营'],
+            recruitmentInfo: '招新中：欢迎喜欢拍照与后期的你，一起外拍！',
+            managerIds: [],
+          },
+          {
+            id: 'club_sports',
+            name: '飞羽羽毛球社',
+            description: '从新手到进阶：每周约球、技巧训练、友谊赛。',
+            cover:
+              'https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=' +
+              encodeURIComponent('campus badminton club banner, dynamic badminton scene, pastel blue white green, clean vector illustration, soft shadows, high quality, 16:9') +
+              '&image_size=landscape_16_9',
+            tags: ['羽毛球', '公益'],
+            timePreference: '周末晚上',
+            skillsRequired: ['策划', '主持'],
+            recruitmentInfo: '招新中：欢迎各水平同学，快乐运动！',
+            managerIds: [],
+          },
+          {
+            id: 'club_music',
+            name: '海风音乐社',
+            description: '民谣/流行/乐队：排练、舞台与校园音乐节。',
+            cover:
+              'https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=' +
+              encodeURIComponent('campus music club banner, students playing guitar and singing, soft pastel color palette, clean modern illustration, high quality, 16:9') +
+              '&image_size=landscape_16_9',
+            tags: ['音乐', '演讲'],
+            timePreference: '工作日晚上',
+            skillsRequired: ['主持', '运营', '写作'],
+            recruitmentInfo: '招新中：欢迎热爱音乐的你，加入舞台！',
+            managerIds: [],
+          },
+        ]
+
+        const managerUser = {
+          id: 'user_manager',
+          name: '社团负责人·李明',
+          studentId: 'manager',
+          phone: '13800000000',
+          password: '123456',
+          role: '社团管理者',
+          authStatus: '已认证',
+          realName: '李明',
+          managedClubs: ['club_ai'],
+          idPhotoBase64: '',
+          managerProofBase64: '',
+        }
+        clubs.find((c) => c.id === 'club_ai').managerIds.push(managerUser.id)
+
+        const studentUser = {
+          id: 'user_student',
+          name: '普通学生·小周',
+          studentId: 'student',
+          phone: '13900000000',
+          password: '123456',
+          role: '普通学生',
+          authStatus: '已认证',
+          realName: '周同学',
+          managedClubs: [],
+          idPhotoBase64: '',
+          managerProofBase64: '',
+        }
+
+        const adminUser = {
+          id: 'user_admin',
+          name: '审核员·Admin',
+          studentId: 'admin',
+          phone: '00000000000',
+          password: '123456',
+          role: '审核员',
+          authStatus: '已认证',
+          realName: '系统审核员',
+          managedClubs: [],
+          idPhotoBase64: '',
+          managerProofBase64: '',
+        }
+
+        const activities = [
+          {
+            id: 'act_1',
+            clubId: 'club_ai',
+            name: 'AI 入门工作坊',
+            time: futureIso(2, 19),
+            location: '信息楼 302',
+            theme: 'AIGC 与提示词',
+            description: '从 0 到 1 做一个可演示的小应用。',
+            participationType: '需报名',
+            creatorName: managerUser.name,
+          },
+          {
+            id: 'act_2',
+            clubId: 'club_photo',
+            name: '校园外拍 · 春日光影',
+            time: futureIso(4, 15),
+            location: '图书馆前草坪集合',
+            theme: '人像与构图',
+            description: '带上相机/手机，完成一组作品集。',
+            participationType: '公开',
+            creatorName: '摄影社',
+          },
+          {
+            id: 'act_3',
+            clubId: 'club_sports',
+            name: '新手友谊赛',
+            time: futureIso(6, 20),
+            location: '体育馆 2 号场',
+            theme: '双打配合',
+            description: '面向新手的轻松对抗赛。',
+            participationType: '需报名',
+            creatorName: '羽毛球社',
+          },
+        ]
+
+        const applications = []
+        const discussions = [
+          {
+            id: 'd_1',
+            clubId: 'club_ai',
+            userId: studentUser.id,
+            content: '请问 AI 工作坊需要带电脑吗？',
+            isAnonymous: false,
+            parentId: null,
+            createdAt: futureIso(-1, 10),
+          },
+          {
+            id: 'd_2',
+            clubId: 'club_ai',
+            userId: managerUser.id,
+            content: '建议带电脑，现场也会提供少量借用。',
+            isAnonymous: false,
+            parentId: 'd_1',
+            createdAt: futureIso(-1, 11),
+          },
+          {
+            id: 'd_3',
+            clubId: 'club_photo',
+            userId: studentUser.id,
+            content: '匿名问一下，手机也能参加外拍吗？',
+            isAnonymous: true,
+            parentId: null,
+            createdAt: futureIso(-2, 16),
+          },
+        ]
+
+        const profiles = [
+          {
+            userId: studentUser.id,
+            interests: ['科技', '编程', 'AI'],
+            timePreference: '工作日晚上',
+            skills: ['前端', '写作'],
+          },
+        ]
+
+        LS.write(LS.k.users, [managerUser, studentUser, adminUser])
+        LS.write(LS.k.clubs, clubs)
+        LS.write(LS.k.activities, activities)
+        LS.write(LS.k.applications, applications)
+        LS.write(LS.k.discussions, discussions)
+        LS.write(LS.k.profiles, profiles)
+        LS.del(LS.k.session)
+      }
+
+      const Store = (() => {
+        const state = reactive({
+          users: [],
+          clubs: [],
+          activities: [],
+          applications: [],
+          discussions: [],
+          profiles: [],
+          session: null,
+          toasts: [],
+        })
+
+        const loadAll = () => {
+          state.users = LS.read(LS.k.users, [])
+          state.clubs = LS.read(LS.k.clubs, [])
+          state.activities = LS.read(LS.k.activities, [])
+          state.applications = LS.read(LS.k.applications, [])
+          state.discussions = LS.read(LS.k.discussions, [])
+          state.profiles = LS.read(LS.k.profiles, [])
+          state.session = LS.read(LS.k.session, null)
+        }
+        const persist = (key) => {
+          if (key === 'users') LS.write(LS.k.users, state.users)
+          if (key === 'clubs') LS.write(LS.k.clubs, state.clubs)
+          if (key === 'activities') LS.write(LS.k.activities, state.activities)
+          if (key === 'applications') LS.write(LS.k.applications, state.applications)
+          if (key === 'discussions') LS.write(LS.k.discussions, state.discussions)
+          if (key === 'profiles') LS.write(LS.k.profiles, state.profiles)
+          if (key === 'session') LS.write(LS.k.session, state.session)
+        }
+
+        const toast = (type, title, desc) => {
+          const id = uid()
+          state.toasts.push({ id, type, title, desc })
+          setTimeout(() => {
+            state.toasts = state.toasts.filter((t) => t.id !== id)
+          }, 3400)
+        }
+
+        const currentUser = computed(() => {
+          if (!state.session?.userId) return null
+          return state.users.find((u) => u.id === state.session.userId) || null
+        })
+
+        const isAuditor = computed(() => currentUser.value?.studentId === 'admin')
+        const isVerified = computed(() => currentUser.value?.authStatus === '已认证')
+
+        const login = (studentId, password) => {
+          const u = state.users.find((x) => x.studentId === studentId)
+          if (!u || u.password !== password) return { ok: false, msg: '学号或密码错误' }
+          state.session = { userId: u.id, at: nowIso() }
+          persist('session')
+          return { ok: true }
+        }
+
+        const logout = () => {
+          state.session = null
+          persist('session')
+        }
+
+        const reset = () => {
+          Object.values(LS.k).forEach((k) => {
+            if (typeof k === 'string') LS.del(k)
+          })
+          seedIfEmpty()
+          loadAll()
+        }
+
+        loadAll()
+        return {
+          state,
+          loadAll,
+          persist,
+          toast,
+          currentUser,
+          isAuditor,
+          isVerified,
+          login,
+          logout,
+          reset,
+        }
+      })()
+
+      seedIfEmpty()
+      Store.loadAll()
+
+      const computeMatch = (profile, club) => {
+        if (!profile) return null
+        const safeArr = (v) => (Array.isArray(v) ? v : [])
+        const interests = safeArr(profile.interests)
+        const skills = safeArr(profile.skills)
+        const clubTags = safeArr(club.tags)
+        const clubSkills = safeArr(club.skillsRequired)
+
+        // 匹配算法：兴趣 0.5 + 时间 0.3 + 技能 0.2
+        const interestScore = clubTags.length ? (clubTags.filter((t) => interests.includes(t)).length / clubTags.length) * 100 : 0
+        const timeScore = profile.timePreference ? (profile.timePreference === club.timePreference ? 100 : 50) : 50
+        const skillScore = clubSkills.length ? (clubSkills.filter((s) => skills.includes(s)).length / clubSkills.length) * 100 : 0
+        const total = interestScore * 0.5 + timeScore * 0.3 + skillScore * 0.2
+        return Math.round(total)
+      }
+
+      const fileToBase64 = (file) =>
+        new Promise((resolve, reject) => {
+          const reader = new FileReader()
+          reader.onload = () => resolve(String(reader.result || ''))
+          reader.onerror = () => reject(new Error('读取失败'))
+          reader.readAsDataURL(file)
+        })
+
+      const Toasts = {
+        props: ['items'],
+        template: `
+          <div class="toast-wrap" aria-live="polite">
+            <div v-for="t in items" :key="t.id" class="toast">
+              <div class="row" style="justify-content:space-between">
+                <div class="t">{{t.title}}</div>
+                <span class="badge" :class="t.type==='success'?'ok':(t.type==='warn'?'warn':(t.type==='danger'?'danger':''))">{{t.type}}</span>
+              </div>
+              <div class="d" v-if="t.desc">{{t.desc}}</div>
+            </div>
+          </div>
+        `,
+      }
+
+      const Modal = {
+        props: ['open', 'title'],
+        emits: ['close'],
+        template: `
+          <div v-if="open" class="mask" @click.self="$emit('close')">
+            <div class="modal" role="dialog" aria-modal="true">
+              <div class="modal-h">
+                <div>
+                  <div class="h2">{{title}}</div>
+                  <div class="k" style="margin-top:4px"><slot name="subtitle"></slot></div>
+                </div>
+                <button class="btn btn-ghost" @click="$emit('close')">关闭</button>
+              </div>
+              <div class="modal-b"><slot></slot></div>
+            </div>
+          </div>
+        `,
+      }
+
+      const NavBar = {
+        components: { RouterLink },
+        setup() {
+          const u = Store.currentUser
+          const verified = Store.isVerified
+          const auditor = Store.isAuditor
+          const hasManaged = computed(() => (u.value?.managedClubs || []).length > 0)
+          const router = useRouter()
+          const logout = () => {
+            Store.logout()
+            Store.toast('success', '已退出登录')
+            router.push('/login')
+          }
+          return { u, verified, auditor, hasManaged, logout }
+        },
+        template: `
+          <div class="topbar">
+            <div class="topbar-inner">
+              <div class="brand">
+                <div class="logo"></div>
+                <div>
+                  <div style="font-weight:850;line-height:1">社团引力波</div>
+                  <div class="k">高校社团智能匹配平台 · 演示版</div>
+                </div>
+              </div>
+              <div class="nav">
+                <RouterLink to="/" custom v-slot="{navigate,isActive}">
+                  <a :class="{active:isActive}" @click="navigate">首页</a>
+                </RouterLink>
+                <RouterLink to="/match" custom v-slot="{navigate,isActive}">
+                  <a :class="{active:isActive}" @click="navigate">开始匹配</a>
+                </RouterLink>
+                <RouterLink to="/my-applications" custom v-slot="{navigate,isActive}">
+                  <a :class="{active:isActive}" @click="navigate">我的报名</a>
+                </RouterLink>
+                <RouterLink v-if="verified && hasManaged" to="/manage" custom v-slot="{navigate,isActive}">
+                  <a :class="{active:isActive}" @click="navigate">管理面板</a>
+                </RouterLink>
+                <RouterLink v-if="auditor" to="/audit" custom v-slot="{navigate,isActive}">
+                  <a :class="{active:isActive}" @click="navigate">审核中心</a>
+                </RouterLink>
+              </div>
+              <div class="row" v-if="u" style="justify-content:flex-end">
+                <span class="pill">{{u.name}}</span>
+                <span class="badge" :class="u.authStatus==='已认证'?'ok':'warn'">{{u.authStatus}}</span>
+                <span class="badge">{{u.role}}</span>
+                <span class="sep"></span>
+                <button class="btn" @click="logout">退出</button>
+              </div>
+              <div class="row" v-else>
+                <RouterLink class="btn" to="/login">登录</RouterLink>
+              </div>
+            </div>
+          </div>
+        `,
+      }
+
+      const RequireVerified = {
+        setup() {
+          const u = Store.currentUser
+          const router = useRouter()
+          const goAuditHint = computed(() => u.value?.role === '社团管理者')
+          const goLogin = () => router.push('/login')
+          return { u, goLogin, goAuditHint }
+        },
+        template: `
+          <div class="container">
+            <div class="card">
+              <div class="card-b">
+                <div class="h1">账号待审核</div>
+                <div class="p muted" style="margin-top:8px">
+                  你已注册成功，但当前账号状态为“待审核”，暂不可使用完整功能。
+                </div>
+                <div class="hr"></div>
+                <div class="p">
+                  演示账号：<span class="badge">student / 123456</span>、<span class="badge">manager / 123456</span>、<span class="badge">admin / 123456</span>
+                </div>
+                <div class="row" style="margin-top:14px">
+                  <button class="btn" @click="goLogin">返回登录</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        `,
+      }
+
+      const LoginPage = {
+        setup() {
+          const router = useRouter()
+          const studentId = ref('')
+          const password = ref('')
+          const loading = ref(false)
+          const submit = async () => {
+            loading.value = true
+            try {
+              const r = Store.login(studentId.value.trim(), password.value)
+              if (!r.ok) {
+                Store.toast('danger', '登录失败', r.msg)
+                return
+              }
+              Store.loadAll()
+              const u = Store.currentUser.value
+              Store.toast('success', '登录成功', `欢迎你，${u?.name || ''}`)
+              if (u?.authStatus !== '已认证') router.push('/pending')
+              else router.push('/')
+            } finally {
+              loading.value = false
+            }
+          }
+          return { studentId, password, loading, submit }
+        },
+        template: `
+          <div class="container" style="display:flex;justify-content:center">
+            <div class="card" style="width:min(460px,100%);margin-top:28px">
+              <div class="card-b">
+                <div class="h1">登录</div>
+                <div class="k" style="margin-top:6px">使用 学号 + 密码 登录（演示：student/manager/admin，密码均为 123456）</div>
+                <div class="hr"></div>
+                <div class="grid" style="gap:10px">
+                  <label class="k">学号</label>
+                  <input class="input" v-model="studentId" placeholder="例如：student" />
+                  <label class="k">密码</label>
+                  <input class="input" v-model="password" type="password" placeholder="123456" />
+                </div>
+                <div class="row" style="margin-top:14px;justify-content:space-between">
+                  <RouterLink class="link" to="/register">没有账号？去注册</RouterLink>
+                  <button class="btn btn-primary" :disabled="loading" @click="submit">{{loading?'登录中…':'登录'}} </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        `,
+      }
+
+      const RegisterPage = {
+        setup() {
+          const router = useRouter()
+          const form = reactive({
+            name: '',
+            studentId: '',
+            phone: '',
+            password: '',
+            role: '普通学生',
+            idPhotoBase64: '',
+            managerProofBase64: '',
+          })
+          const loading = ref(false)
+
+          const pickId = async (e) => {
+            const f = e.target.files?.[0]
+            if (!f) return
+            form.idPhotoBase64 = await fileToBase64(f)
+          }
+          const pickProof = async (e) => {
+            const f = e.target.files?.[0]
+            if (!f) return
+            form.managerProofBase64 = await fileToBase64(f)
+          }
+
+          const submit = async () => {
+            const sid = form.studentId.trim()
+            if (!form.name.trim() || !sid || !form.phone.trim() || !form.password) {
+              Store.toast('warn', '请完善必填信息')
+              return
+            }
+            if (Store.state.users.some((u) => u.studentId === sid)) {
+              Store.toast('danger', '注册失败', '学号已存在')
+              return
+            }
+            if (!form.idPhotoBase64) {
+              Store.toast('warn', '请上传学生证/身份证照片（模拟）')
+              return
+            }
+            if (form.role === '社团管理者' && !form.managerProofBase64) {
+              Store.toast('warn', '社团管理者需上传负责人证明（模拟）')
+              return
+            }
+
+            loading.value = true
+            try {
+              const user = {
+                id: uid(),
+                name: form.name.trim(),
+                studentId: sid,
+                phone: form.phone.trim(),
+                password: form.password,
+                role: form.role,
+                authStatus: '待审核',
+                realName: form.name.trim(),
+                managedClubs: [],
+                idPhotoBase64: form.idPhotoBase64,
+                managerProofBase64: form.managerProofBase64,
+              }
+              Store.state.users = [...Store.state.users, user]
+              Store.persist('users')
+              Store.toast('success', '注册成功', '账号已提交审核，请等待审核中心通过')
+              router.push('/login')
+            } finally {
+              loading.value = false
+            }
+          }
+
+          return { form, loading, pickId, pickProof, submit }
+        },
+        template: `
+          <div class="container" style="display:flex;justify-content:center">
+            <div class="card" style="width:min(720px,100%);margin-top:18px">
+              <div class="card-b">
+                <div class="h1">注册</div>
+                <div class="k" style="margin-top:6px">注册后默认为“待审核”，需在“审核中心”（演示）通过后才能使用完整功能</div>
+                <div class="hr"></div>
+                <div class="grid" style="grid-template-columns:1fr;gap:12px">
+                  <div class="grid" style="grid-template-columns:1fr;gap:10px">
+                    <label class="k">姓名 *</label>
+                    <input class="input" v-model="form.name" placeholder="例如：王同学" />
+                  </div>
+                  <div class="grid" style="grid-template-columns:1fr;gap:10px">
+                    <label class="k">学号 *</label>
+                    <input class="input" v-model="form.studentId" placeholder="例如：20240001" />
+                  </div>
+                  <div class="grid" style="grid-template-columns:1fr;gap:10px">
+                    <label class="k">联系方式 *</label>
+                    <input class="input" v-model="form.phone" placeholder="手机号" />
+                  </div>
+                  <div class="grid" style="grid-template-columns:1fr;gap:10px">
+                    <label class="k">密码 *</label>
+                    <input class="input" type="password" v-model="form.password" placeholder="至少 6 位" />
+                  </div>
+                  <div class="grid" style="grid-template-columns:1fr;gap:10px">
+                    <label class="k">角色 *</label>
+                    <select class="input" v-model="form.role">
+                      <option value="普通学生">普通学生</option>
+                      <option value="社团管理者">社团管理者</option>
+                    </select>
+                  </div>
+                  <div class="grid" style="grid-template-columns:1fr;gap:10px">
+                    <label class="k">上传学生证/身份证照片（模拟）*</label>
+                    <input class="input" type="file" accept="image/*" @change="pickId" />
+                    <div class="k" v-if="form.idPhotoBase64">已选择：{{form.idPhotoBase64.slice(0,28)}}…</div>
+                  </div>
+                  <div v-if="form.role==='社团管理者'" class="grid" style="grid-template-columns:1fr;gap:10px">
+                    <label class="k">上传社团负责人证明（模拟）*</label>
+                    <input class="input" type="file" accept="image/*" @change="pickProof" />
+                    <div class="k" v-if="form.managerProofBase64">已选择：{{form.managerProofBase64.slice(0,28)}}…</div>
+                  </div>
+                </div>
+                <div class="row" style="margin-top:14px;justify-content:space-between">
+                  <RouterLink class="link" to="/login">已有账号？去登录</RouterLink>
+                  <button class="btn btn-primary" :disabled="loading" @click="submit">{{loading?'提交中…':'提交注册'}} </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        `,
+      }
+
+      const HomePage = {
+        setup() {
+          const router = useRouter()
+          const u = Store.currentUser
+          const profile = computed(() => Store.state.profiles.find((p) => p.userId === u.value?.id) || null)
+          const upcoming = computed(() => {
+            const now = Date.now()
+            return [...Store.state.activities]
+              .filter((a) => new Date(a.time).getTime() >= now)
+              .sort((a, b) => new Date(a.time).getTime() - new Date(b.time).getTime())
+          })
+
+          const recommended = computed(() => {
+            const clubs = Store.state.clubs
+            const p = profile.value
+            if (!clubs.length) return []
+            if (!p) return clubs.slice().sort(() => Math.random() - 0.5).slice(0, 3).map((c) => ({ club: c, score: null }))
+            return clubs
+              .map((c) => ({ club: c, score: computeMatch(p, c) }))
+              .sort((a, b) => (b.score ?? 0) - (a.score ?? 0))
+              .slice(0, 3)
+          })
+
+          const goClub = (clubId) => router.push(`/clubs/${clubId}`)
+          const goMatch = () => router.push('/match')
+          const goMine = () => router.push('/my-applications')
+
+          return { profile, upcoming, recommended, goClub, goMatch, goMine, fmtDT }
+        },
+        template: `
+          <div class="container">
+            <div class="grid grid-2">
+              <div class="col">
+                <div class="card">
+                  <div class="card-h"><div class="h2">快捷入口</div><div class="k" style="margin-top:6px">快速开始匹配，或查看你的报名记录</div></div>
+                  <div class="card-b">
+                    <div class="row">
+                      <button class="btn btn-primary" @click="goMatch">开始匹配</button>
+                      <button class="btn" @click="goMine">我的报名</button>
+                    </div>
+                    <div class="hr"></div>
+                    <div class="k" v-if="!profile">你还未填写画像，推荐社团将随机展示。去 <a class="link" href="#/match">匹配页</a> 完成画像后可获得更准确推荐。</div>
+                    <div class="k" v-else>已填写画像：<span class="badge ok">{{profile.timePreference}}</span> <span class="badge">兴趣 {{profile.interests.length}}</span> <span class="badge">技能 {{profile.skills.length}}</span></div>
+                  </div>
+                </div>
+
+                <div class="card">
+                  <div class="card-h"><div class="h2">推荐社团</div><div class="k" style="margin-top:6px">Top 3 匹配度（或随机）</div></div>
+                  <div class="card-b">
+                    <div class="list">
+                      <div v-for="it in recommended" :key="it.club.id" class="card" style="box-shadow:none">
+                        <div class="card-b">
+                          <div class="row" style="justify-content:space-between">
+                            <div>
+                              <div class="h3">{{it.club.name}}</div>
+                              <div class="k" style="margin-top:2px">{{it.club.description}}</div>
+                            </div>
+                            <div style="min-width:96px;text-align:right">
+                              <div class="h3" v-if="it.score!==null">{{it.score}}%</div>
+                              <div class="k" v-else>随机</div>
+                            </div>
+                          </div>
+                          <div class="progress" style="margin-top:10px">
+                            <div :style="{width: (it.score===null?50:it.score) + '%'}"></div>
+                          </div>
+                          <div class="row" style="margin-top:10px;justify-content:space-between">
+                            <div class="row" style="gap:6px">
+                              <span class="badge" v-for="t in it.club.tags.slice(0,3)" :key="t">{{t}}</span>
+                            </div>
+                            <button class="btn" @click="goClub(it.club.id)">查看详情</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col">
+                <div class="card">
+                  <div class="card-h"><div class="h2">活动时间表</div><div class="k" style="margin-top:6px">未来活动按时间升序</div></div>
+                  <div class="card-b">
+                    <div v-if="upcoming.length===0" class="empty">
+                      <div class="h3">暂无未来活动</div>
+                      <div class="k" style="margin-top:6px">社团管理者可在管理面板发布活动。</div>
+                    </div>
+                    <div class="list" v-else>
+                      <div v-for="a in upcoming" :key="a.id" class="card" style="box-shadow:none">
+                        <div class="card-b">
+                          <div class="row" style="justify-content:space-between">
+                            <div>
+                              <div class="h3">{{a.name}}</div>
+                              <div class="k" style="margin-top:4px">{{fmtDT(a.time)}} · {{a.location}} · {{a.theme}}</div>
+                            </div>
+                            <span class="badge" :class="a.participationType==='需报名'?'warn':'ok'">{{a.participationType}}</span>
+                          </div>
+                          <div class="k" style="margin-top:8px">{{a.description}}</div>
+                          <div class="row" style="margin-top:10px;justify-content:space-between">
+                            <div class="k">发布者：{{a.creatorName}}</div>
+                            <button class="btn" @click="goClub(a.clubId)">进入社团</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        `,
+      }
+
+      const MatchPage = {
+        setup() {
+          const router = useRouter()
+          const u = Store.currentUser
+          const existing = computed(() => Store.state.profiles.find((p) => p.userId === u.value?.id) || null)
+          const step = ref(1)
+          const model = reactive({
+            interests: [],
+            timePreference: '',
+            skills: [],
+          })
+          watch(
+            existing,
+            (p) => {
+              if (!p) return
+              model.interests = [...p.interests]
+              model.timePreference = p.timePreference
+              model.skills = [...p.skills]
+            },
+            { immediate: true }
+          )
+
+          const toggle = (arr, v) => {
+            const i = arr.indexOf(v)
+            if (i >= 0) arr.splice(i, 1)
+            else arr.push(v)
+          }
+          const next = () => {
+            if (step.value === 1 && model.interests.length === 0) {
+              Store.toast('warn', '请选择至少 1 个兴趣标签')
+              return
+            }
+            if (step.value === 2 && !model.timePreference) {
+              Store.toast('warn', '请选择时间偏好')
+              return
+            }
+            if (step.value === 3 && model.skills.length === 0) {
+              Store.toast('warn', '请选择至少 1 个技能特长')
+              return
+            }
+            step.value = Math.min(3, step.value + 1)
+          }
+          const prev = () => (step.value = Math.max(1, step.value - 1))
+
+          const save = () => {
+            const uid2 = u.value?.id
+            if (!uid2) return
+            const p = { userId: uid2, interests: [...model.interests], timePreference: model.timePreference, skills: [...model.skills] }
+            const idx = Store.state.profiles.findIndex((x) => x.userId === uid2)
+            if (idx >= 0) Store.state.profiles.splice(idx, 1, p)
+            else Store.state.profiles.push(p)
+            Store.persist('profiles')
+            Store.toast('success', '画像已保存')
+            router.push('/match/results')
+          }
+
+          return { step, model, interestTags, skillTags, timePrefs, toggle, next, prev, save }
+        },
+        template: `
+          <div class="container">
+            <div class="card">
+              <div class="card-h">
+                <div class="h2">画像填写（3 步）</div>
+                <div class="k" style="margin-top:6px">填写后将用于计算社团匹配度</div>
+              </div>
+              <div class="card-b">
+                <div class="row" style="justify-content:space-between">
+                  <div class="k">步骤 {{step}} / 3</div>
+                  <div class="badge">兴趣 0.5 · 时间 0.3 · 技能 0.2</div>
+                </div>
+                <div class="hr"></div>
+                <div v-if="step===1">
+                  <div class="h3">选择兴趣标签（多选）</div>
+                  <div class="row" style="margin-top:10px">
+                    <span v-for="t in interestTags" :key="t" class="chip" :class="{on:model.interests.includes(t)}" @click="toggle(model.interests,t)">{{t}}</span>
+                  </div>
+                </div>
+                <div v-else-if="step===2">
+                  <div class="h3">选择时间偏好（单选）</div>
+                  <div class="row" style="margin-top:10px">
+                    <label v-for="t in timePrefs" :key="t" class="chip" :class="{on:model.timePreference===t}" style="cursor:pointer">
+                      <input type="radio" name="tp" :value="t" v-model="model.timePreference" style="display:none" />
+                      {{t}}
+                    </label>
+                  </div>
+                </div>
+                <div v-else>
+                  <div class="h3">选择技能特长（多选）</div>
+                  <div class="row" style="margin-top:10px">
+                    <span v-for="t in skillTags" :key="t" class="chip" :class="{on:model.skills.includes(t)}" @click="toggle(model.skills,t)">{{t}}</span>
+                  </div>
+                </div>
+
+                <div class="row" style="margin-top:16px;justify-content:space-between">
+                  <button class="btn" @click="prev" :disabled="step===1">上一步</button>
+                  <div class="row">
+                    <button class="btn" v-if="step<3" @click="next">下一步</button>
+                    <button class="btn btn-primary" v-else @click="save">保存并匹配</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        `,
+      }
+
+      const MatchResultsPage = {
+        setup() {
+          const router = useRouter()
+          const u = Store.currentUser
+          const profile = computed(() => Store.state.profiles.find((p) => p.userId === u.value?.id) || null)
+          const items = computed(() => {
+            const p = profile.value
+            if (!p) return []
+            return Store.state.clubs
+              .map((c) => ({ club: c, score: computeMatch(p, c) }))
+              .sort((a, b) => (b.score ?? 0) - (a.score ?? 0))
+          })
+          const goClub = (id) => router.push(`/clubs/${id}`)
+          const back = () => router.push('/match')
+          return { profile, items, goClub, back }
+        },
+        template: `
+          <div class="container">
+            <div class="card">
+              <div class="card-h"><div class="h2">匹配结果</div><div class="k" style="margin-top:6px">按匹配度降序排列</div></div>
+              <div class="card-b">
+                <div v-if="!profile" class="empty">
+                  <div class="h3">你还未填写画像</div>
+                  <div class="k" style="margin-top:6px">请先完成画像填写后再进行匹配。</div>
+                  <div class="row" style="margin-top:12px"><button class="btn btn-primary" @click="back">去填写画像</button></div>
+                </div>
+                <div v-else>
+                  <div class="row" style="justify-content:space-between">
+                    <div class="k">兴趣 {{profile.interests.length}} · 时间 {{profile.timePreference}} · 技能 {{profile.skills.length}}</div>
+                    <button class="btn" @click="back">重新匹配</button>
+                  </div>
+                  <div class="hr"></div>
+                  <div class="grid" style="grid-template-columns:1fr;gap:12px">
+                    <div v-for="it in items" :key="it.club.id" class="card" style="box-shadow:none">
+                      <div class="card-b">
+                        <div class="row" style="justify-content:space-between">
+                          <div>
+                            <div class="h3">{{it.club.name}}</div>
+                            <div class="k" style="margin-top:4px">{{it.club.description}}</div>
+                          </div>
+                          <div style="text-align:right">
+                            <div class="h3">{{it.score}}%</div>
+                            <div class="k">{{it.club.timePreference}}</div>
+                          </div>
+                        </div>
+                        <div class="progress" style="margin-top:10px"><div :style="{width: it.score + '%'}"></div></div>
+                        <div class="row" style="margin-top:10px;justify-content:space-between">
+                          <div class="row" style="gap:6px"><span class="badge" v-for="t in it.club.tags" :key="t">{{t}}</span></div>
+                          <button class="btn" @click="goClub(it.club.id)">查看详情</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        `,
+      }
+
+      const MyApplicationsPage = {
+        setup() {
+          const router = useRouter()
+          const u = Store.currentUser
+          const apps = computed(() => Store.state.applications.filter((a) => a.userId === u.value?.id))
+          const view = computed(() =>
+            apps.value
+              .map((a) => ({
+                app: a,
+                club: Store.state.clubs.find((c) => c.id === a.clubId) || null,
+              }))
+              .sort((x, y) => new Date(y.app.applyTime).getTime() - new Date(x.app.applyTime).getTime())
+          )
+          const cancel = (id) => {
+            Store.state.applications = Store.state.applications.filter((a) => a.id !== id)
+            Store.persist('applications')
+            Store.toast('success', '已取消报名')
+          }
+          const goMatch = () => router.push('/match')
+          const goClub = (id) => router.push(`/clubs/${id}`)
+          return { view, cancel, goMatch, goClub, fmtDT }
+        },
+        template: `
+          <div class="container">
+            <div class="card">
+              <div class="card-h"><div class="h2">我的报名</div><div class="k" style="margin-top:6px">查看已报名社团与状态</div></div>
+              <div class="card-b">
+                <div v-if="view.length===0" class="empty">
+                  <div class="h3">你还没有报名记录</div>
+                  <div class="k" style="margin-top:6px">去匹配页找到合适社团并报名。</div>
+                  <div class="row" style="margin-top:12px"><button class="btn btn-primary" @click="goMatch">去匹配</button></div>
+                </div>
+                <div v-else>
+                  <table class="table">
+                    <tbody>
+                      <tr v-for="x in view" :key="x.app.id" class="tr">
+                        <td class="td">
+                          <div class="h3">{{x.club?.name || '未知社团'}}</div>
+                          <div class="k" style="margin-top:4px">报名时间：{{fmtDT(x.app.applyTime)}}</div>
+                        </td>
+                        <td class="td" style="width:140px">
+                          <span class="badge" :class="x.app.status==='已录取'?'ok':(x.app.status==='拒绝'?'danger':'warn')">{{x.app.status}}</span>
+                        </td>
+                        <td class="td" style="width:220px;text-align:right">
+                          <button class="btn" @click="goClub(x.app.clubId)">查看社团</button>
+                          <button class="btn btn-danger" style="margin-left:8px" @click="cancel(x.app.id)">取消</button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        `,
+      }
+
+      const ClubDetailPage = {
+        components: { Modal },
+        setup() {
+          const route = useRoute()
+          const router = useRouter()
+          const u = Store.currentUser
+          const clubId = computed(() => String(route.params.clubId || ''))
+          const club = computed(() => Store.state.clubs.find((c) => c.id === clubId.value) || null)
+          const isManager = computed(() => {
+            const c = club.value
+            const uid2 = u.value?.id
+            if (!c || !uid2) return false
+            return Array.isArray(c.managerIds) && c.managerIds.includes(uid2)
+          })
+
+          const clubActs = computed(() => Store.state.activities.filter((a) => a.clubId === clubId.value).sort((a, b) => new Date(a.time).getTime() - new Date(b.time).getTime()))
+          const myApp = computed(() => Store.state.applications.find((a) => a.userId === u.value?.id && a.clubId === clubId.value) || null)
+          const canApply = computed(() => !!club.value?.recruitmentInfo)
+
+          const applyOpen = ref(false)
+          const applyForm = reactive({ name: '', studentId: '', phone: '' })
+          watch(
+            u,
+            (v) => {
+              if (!v) return
+              applyForm.name = v.name
+              applyForm.studentId = v.studentId
+              applyForm.phone = v.phone
+            },
+            { immediate: true }
+          )
+
+          const submitApply = () => {
+            if (!applyForm.name.trim() || !applyForm.studentId.trim() || !applyForm.phone.trim()) {
+              Store.toast('warn', '请完善报名信息')
+              return
+            }
+            if (myApp.value) {
+              Store.toast('warn', '不可重复报名')
+              return
+            }
+            const app = {
+              id: uid(),
+              userId: u.value.id,
+              clubId: clubId.value,
+              status: '待审核',
+              applyTime: nowIso(),
+              name: applyForm.name.trim(),
+              studentId: applyForm.studentId.trim(),
+              phone: applyForm.phone.trim(),
+            }
+            Store.state.applications.push(app)
+            Store.persist('applications')
+            applyOpen.value = false
+            Store.toast('success', '报名已提交', '请在“我的报名”查看状态')
+          }
+
+          const discussions = computed(() => Store.state.discussions.filter((d) => d.clubId === clubId.value).sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()))
+          const threads = computed(() => discussions.value.filter((d) => !d.parentId))
+          const repliesFor = (id) => discussions.value.filter((d) => d.parentId === id)
+
+          const newPost = reactive({ content: '', isAnonymous: false })
+          const replyDraft = reactive({ parentId: '', content: '', isAnonymous: false })
+          const showReply = ref('')
+
+          const displayName = (d) => {
+            // 匿名处理：匿名用户 + 可重复的随机编号（基于 discussionId）
+            if (d.isAnonymous) {
+              const num = Math.abs(
+                String(d.id)
+                  .split('')
+                  .reduce((acc, ch) => acc + ch.charCodeAt(0), 0)
+              )
+              return `匿名用户#${(num % 9000) + 1000}`
+            }
+            const user = Store.state.users.find((x) => x.id === d.userId)
+            return user?.name || '未知用户'
+          }
+
+          const addDiscussion = (parentId) => {
+            const content = parentId ? replyDraft.content.trim() : newPost.content.trim()
+            const isAnonymous = parentId ? replyDraft.isAnonymous : newPost.isAnonymous
+            if (!content) {
+              Store.toast('warn', '内容不能为空')
+              return
+            }
+            const d = {
+              id: uid(),
+              clubId: clubId.value,
+              userId: u.value.id,
+              content,
+              isAnonymous,
+              parentId: parentId || null,
+              createdAt: nowIso(),
+            }
+            Store.state.discussions.push(d)
+            Store.persist('discussions')
+            if (parentId) {
+              replyDraft.content = ''
+              replyDraft.isAnonymous = false
+              showReply.value = ''
+            } else {
+              newPost.content = ''
+              newPost.isAnonymous = false
+            }
+            Store.toast('success', '已发布')
+          }
+
+          const delDiscussion = (id) => {
+            // 权限判断：仅本社团管理者可删除任意讨论
+            if (!isManager.value) {
+              Store.toast('danger', '无权限', '仅社团管理者可删除讨论')
+              return
+            }
+            Store.state.discussions = Store.state.discussions.filter((d) => d.id !== id && d.parentId !== id)
+            Store.persist('discussions')
+            Store.toast('success', '已删除')
+          }
+
+          const openReply = (id) => {
+            showReply.value = showReply.value === id ? '' : id
+            replyDraft.parentId = id
+            replyDraft.content = ''
+            replyDraft.isAnonymous = false
+          }
+
+          const goManage = () => router.push(`/manage/${clubId.value}`)
+          const actOpen = ref(false)
+          const actView = ref(null)
+          const viewAct = (a) => {
+            actView.value = a
+            actOpen.value = true
+          }
+
+          return {
+            club,
+            isManager,
+            clubActs,
+            myApp,
+            canApply,
+            applyOpen,
+            applyForm,
+            submitApply,
+            threads,
+            repliesFor,
+            displayName,
+            newPost,
+            replyDraft,
+            showReply,
+            addDiscussion,
+            delDiscussion,
+            openReply,
+            fmtDT,
+            goManage,
+            actOpen,
+            actView,
+            viewAct,
+          }
+        },
+        template: `
+          <div class="container">
+            <div v-if="!club" class="empty">
+              <div class="h3">社团不存在</div>
+              <div class="k" style="margin-top:6px">请从首页或匹配结果进入。</div>
+            </div>
+            <div v-else class="grid" style="grid-template-columns:1fr;gap:16px">
+              <div class="card">
+                <div class="card-b">
+                  <div class="cover">
+                    <img v-if="club.cover" :src="club.cover" alt="cover" />
+                    <div v-else>社团封面</div>
+                  </div>
+                  <div class="row" style="justify-content:space-between;margin-top:12px">
+                    <div>
+                      <div class="h1">{{club.name}}</div>
+                      <div class="k" style="margin-top:6px">{{club.description}}</div>
+                    </div>
+                    <div class="row">
+                      <span class="badge">{{club.timePreference}}</span>
+                      <span class="badge ok" v-if="club.recruitmentInfo">招新中</span>
+                      <span class="badge" v-else>未招新</span>
+                    </div>
+                  </div>
+                  <div class="row" style="margin-top:10px;gap:6px">
+                    <span class="badge" v-for="t in club.tags" :key="t">{{t}}</span>
+                    <span class="badge" v-for="s in club.skillsRequired" :key="s">需求：{{s}}</span>
+                  </div>
+                  <div class="hr"></div>
+                  <div class="h3">招新要求</div>
+                  <div class="p muted" style="margin-top:6px">{{club.recruitmentInfo || '当前暂无招新信息'}}</div>
+                  <div class="row" style="margin-top:12px;justify-content:space-between">
+                    <div class="row">
+                      <button v-if="isManager" class="btn" @click="goManage">进入管理</button>
+                    </div>
+                    <div class="row">
+                      <span v-if="myApp" class="badge warn">已报名：{{myApp.status}}</span>
+                      <button class="btn btn-primary" v-if="canApply && !myApp" @click="applyOpen=true">立即报名</button>
+                      <button class="btn" v-if="!canApply" disabled>当前未招新</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="grid" style="grid-template-columns:1fr;gap:16px">
+                <div class="card">
+                  <div class="card-h"><div class="h2">活动列表</div><div class="k" style="margin-top:6px">点击活动可查看详情</div></div>
+                  <div class="card-b">
+                    <div v-if="clubActs.length===0" class="empty">
+                      <div class="h3">暂无活动</div>
+                      <div class="k" style="margin-top:6px">社团管理者可发布活动。</div>
+                    </div>
+                    <div v-else class="list">
+                      <div v-for="a in clubActs" :key="a.id" class="card" style="box-shadow:none">
+                        <div class="card-b">
+                          <div class="row" style="justify-content:space-between">
+                            <div>
+                              <div class="h3">{{a.name}}</div>
+                              <div class="k" style="margin-top:4px">{{fmtDT(a.time)}} · {{a.location}} · {{a.theme}}</div>
+                            </div>
+                            <span class="badge" :class="a.participationType==='需报名'?'warn':'ok'">{{a.participationType}}</span>
+                          </div>
+                          <div class="row" style="margin-top:10px;justify-content:flex-end">
+                            <button class="btn" @click="viewAct(a)">查看</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="card">
+                  <div class="card-h"><div class="h2">讨论区</div><div class="k" style="margin-top:6px">支持匿名发言与回复</div></div>
+                  <div class="card-b">
+                    <div class="grid" style="gap:10px">
+                      <textarea class="input" rows="3" v-model="newPost.content" placeholder="发布新讨论…"></textarea>
+                      <div class="row" style="justify-content:space-between">
+                        <label class="k" style="display:flex;align-items:center;gap:8px"><input type="checkbox" v-model="newPost.isAnonymous" />匿名发表</label>
+                        <button class="btn btn-primary" @click="addDiscussion('')">发布</button>
+                      </div>
+                    </div>
+
+                    <div class="hr"></div>
+                    <div v-if="threads.length===0" class="empty">
+                      <div class="h3">暂无讨论</div>
+                      <div class="k" style="margin-top:6px">成为第一个发言的人吧。</div>
+                    </div>
+                    <div v-else class="list">
+                      <div v-for="t in threads" :key="t.id" class="card" style="box-shadow:none">
+                        <div class="card-b">
+                          <div class="row" style="justify-content:space-between;align-items:flex-start">
+                            <div>
+                              <div class="row" style="gap:8px">
+                                <span class="badge">{{displayName(t)}}</span>
+                                <span class="k">{{fmtDT(t.createdAt)}}</span>
+                              </div>
+                              <div class="p" style="margin-top:8px">{{t.content}}</div>
+                            </div>
+                            <button v-if="isManager" class="btn btn-danger" @click="delDiscussion(t.id)">删除</button>
+                          </div>
+                          <div class="row" style="margin-top:10px;justify-content:space-between">
+                            <button class="btn" @click="openReply(t.id)">{{showReply===t.id?'收起回复':'回复'}}</button>
+                            <div class="k">回复 {{repliesFor(t.id).length}}</div>
+                          </div>
+                          <div v-if="showReply===t.id" style="margin-top:10px" class="grid">
+                            <textarea class="input" rows="2" v-model="replyDraft.content" placeholder="写下你的回复…"></textarea>
+                            <div class="row" style="justify-content:space-between">
+                              <label class="k" style="display:flex;align-items:center;gap:8px"><input type="checkbox" v-model="replyDraft.isAnonymous" />匿名回复</label>
+                              <button class="btn btn-primary" @click="addDiscussion(t.id)">发送</button>
+                            </div>
+                          </div>
+                          <div v-if="repliesFor(t.id).length" class="hr"></div>
+                          <div v-if="repliesFor(t.id).length" class="list" style="gap:10px">
+                            <div v-for="r in repliesFor(t.id)" :key="r.id" class="card" style="box-shadow:none;background:rgba(2,6,23,.02)">
+                              <div class="card-b">
+                                <div class="row" style="justify-content:space-between">
+                                  <div class="row" style="gap:8px"><span class="badge">{{displayName(r)}}</span><span class="k">{{fmtDT(r.createdAt)}}</span></div>
+                                  <button v-if="isManager" class="btn btn-danger" @click="delDiscussion(r.id)">删除</button>
+                                </div>
+                                <div class="p" style="margin-top:8px">{{r.content}}</div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <Modal :open="applyOpen" title="社团报名" @close="applyOpen=false">
+              <template #subtitle>提交后记录到本地报名列表（不可重复报名）</template>
+              <div class="grid" style="gap:10px">
+                <label class="k">姓名 *</label>
+                <input class="input" v-model="applyForm.name" />
+                <label class="k">学号 *</label>
+                <input class="input" v-model="applyForm.studentId" />
+                <label class="k">联系方式 *</label>
+                <input class="input" v-model="applyForm.phone" />
+                <div class="row" style="justify-content:flex-end;margin-top:6px">
+                  <button class="btn" @click="applyOpen=false">取消</button>
+                  <button class="btn btn-primary" style="margin-left:8px" @click="submitApply">提交报名</button>
+                </div>
+              </div>
+            </Modal>
+
+            <Modal :open="actOpen" title="活动详情" @close="actOpen=false">
+              <div v-if="actView" class="grid" style="gap:10px">
+                <div class="h3">{{actView.name}}</div>
+                <div class="k">{{fmtDT(actView.time)}} · {{actView.location}}</div>
+                <div class="badge">主题：{{actView.theme}}</div>
+                <div class="p muted">{{actView.description}}</div>
+                <div class="row" style="justify-content:space-between">
+                  <span class="badge" :class="actView.participationType==='需报名'?'warn':'ok'">{{actView.participationType}}</span>
+                  <button
+                    v-if="actView.participationType==='需报名' && !myApp && canApply"
+                    class="btn btn-primary"
+                    @click="actOpen=false; applyOpen=true"
+                  >报名后参与</button>
+                  <span v-else-if="actView.participationType==='需报名' && myApp" class="badge ok">已报名社团</span>
+                </div>
+              </div>
+            </Modal>
+          </div>
+        `,
+      }
+
+      const ManagePage = {
+        setup() {
+          const router = useRouter()
+          const u = Store.currentUser
+          const managed = computed(() => {
+            const ids = u.value?.managedClubs || []
+            return Store.state.clubs.filter((c) => ids.includes(c.id))
+          })
+          const go = (id) => router.push(`/manage/${id}`)
+          return { managed, go }
+        },
+        template: `
+          <div class="container">
+            <div class="card">
+              <div class="card-h"><div class="h2">我的社团管理</div><div class="k" style="margin-top:6px">列出你管理的所有社团</div></div>
+              <div class="card-b">
+                <div v-if="managed.length===0" class="empty">
+                  <div class="h3">你还没有管理任何社团</div>
+                  <div class="k" style="margin-top:6px">如你注册为社团管理者，请在审核通过后由审核中心关联社团。</div>
+                </div>
+                <div v-else class="grid" style="grid-template-columns:1fr;gap:12px">
+                  <div v-for="c in managed" :key="c.id" class="card" style="box-shadow:none">
+                    <div class="card-b">
+                      <div class="row" style="justify-content:space-between">
+                        <div>
+                          <div class="h3">{{c.name}}</div>
+                          <div class="k" style="margin-top:4px">{{c.description}}</div>
+                        </div>
+                        <button class="btn btn-primary" @click="go(c.id)">进入管理</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        `,
+      }
+
+      const ManageClubPage = {
+        components: { Modal },
+        setup() {
+          const route = useRoute()
+          const router = useRouter()
+          const u = Store.currentUser
+          const clubId = computed(() => String(route.params.clubId || ''))
+          const club = computed(() => Store.state.clubs.find((c) => c.id === clubId.value) || null)
+          const canManage = computed(() => {
+            const c = club.value
+            if (!c || !u.value) return false
+            return Array.isArray(c.managerIds) && c.managerIds.includes(u.value.id)
+          })
+          const edit = reactive({
+            name: '',
+            description: '',
+            cover: '',
+            tags: [],
+            timePreference: '',
+            skillsRequired: [],
+            recruitmentInfo: '',
+          })
+          watch(
+            club,
+            (c) => {
+              if (!c) return
+              edit.name = c.name
+              edit.description = c.description
+              edit.cover = c.cover
+              edit.tags = [...(c.tags || [])]
+              edit.timePreference = c.timePreference
+              edit.skillsRequired = [...(c.skillsRequired || [])]
+              edit.recruitmentInfo = c.recruitmentInfo
+            },
+            { immediate: true }
+          )
+          const toggle = (arr, v) => {
+            const i = arr.indexOf(v)
+            if (i >= 0) arr.splice(i, 1)
+            else arr.push(v)
+          }
+          const pickCover = async (e) => {
+            const f = e.target.files?.[0]
+            if (!f) return
+            edit.cover = await fileToBase64(f)
+          }
+          const saveClub = () => {
+            if (!canManage.value) {
+              Store.toast('danger', '无权限', '你不是该社团管理员')
+              return
+            }
+            if (!edit.name.trim()) {
+              Store.toast('warn', '社团名称不能为空')
+              return
+            }
+            const idx = Store.state.clubs.findIndex((c) => c.id === clubId.value)
+            if (idx < 0) return
+            const c = Store.state.clubs[idx]
+            Store.state.clubs.splice(idx, 1, {
+              ...c,
+              name: edit.name.trim(),
+              description: edit.description.trim(),
+              cover: edit.cover,
+              tags: [...edit.tags],
+              timePreference: edit.timePreference,
+              skillsRequired: [...edit.skillsRequired],
+              recruitmentInfo: edit.recruitmentInfo.trim(),
+            })
+            Store.persist('clubs')
+            Store.toast('success', '已保存社团信息')
+          }
+
+          const acts = computed(() => Store.state.activities.filter((a) => a.clubId === clubId.value).sort((a, b) => new Date(a.time).getTime() - new Date(b.time).getTime()))
+          const actOpen = ref(false)
+          const actEdit = reactive({ id: '', name: '', time: '', location: '', theme: '', description: '', participationType: '公开' })
+          const openNew = () => {
+            actEdit.id = ''
+            actEdit.name = ''
+            actEdit.time = futureIso(7, 19).slice(0, 16)
+            actEdit.location = ''
+            actEdit.theme = ''
+            actEdit.description = ''
+            actEdit.participationType = '公开'
+            actOpen.value = true
+          }
+          const openEditAct = (a) => {
+            actEdit.id = a.id
+            actEdit.name = a.name
+            actEdit.time = new Date(a.time).toISOString().slice(0, 16)
+            actEdit.location = a.location
+            actEdit.theme = a.theme
+            actEdit.description = a.description
+            actEdit.participationType = a.participationType
+            actOpen.value = true
+          }
+          const saveAct = () => {
+            if (!actEdit.name.trim() || !actEdit.time || !actEdit.location.trim()) {
+              Store.toast('warn', '请完善活动必填项')
+              return
+            }
+            const iso = new Date(actEdit.time).toISOString()
+            if (!actEdit.id) {
+              Store.state.activities.push({
+                id: uid(),
+                clubId: clubId.value,
+                name: actEdit.name.trim(),
+                time: iso,
+                location: actEdit.location.trim(),
+                theme: actEdit.theme.trim(),
+                description: actEdit.description.trim(),
+                participationType: actEdit.participationType,
+                creatorName: u.value?.name || '管理员',
+              })
+            } else {
+              const idx = Store.state.activities.findIndex((x) => x.id === actEdit.id)
+              if (idx >= 0) {
+                const old = Store.state.activities[idx]
+                Store.state.activities.splice(idx, 1, {
+                  ...old,
+                  name: actEdit.name.trim(),
+                  time: iso,
+                  location: actEdit.location.trim(),
+                  theme: actEdit.theme.trim(),
+                  description: actEdit.description.trim(),
+                  participationType: actEdit.participationType,
+                })
+              }
+            }
+            Store.persist('activities')
+            actOpen.value = false
+            Store.toast('success', '活动已保存')
+          }
+          const delAct = (id) => {
+            Store.state.activities = Store.state.activities.filter((a) => a.id !== id)
+            Store.persist('activities')
+            Store.toast('success', '活动已删除')
+          }
+
+          const apps = computed(() => Store.state.applications.filter((a) => a.clubId === clubId.value).sort((a, b) => new Date(b.applyTime).getTime() - new Date(a.applyTime).getTime()))
+          const updateApp = (id, status) => {
+            const idx = Store.state.applications.findIndex((a) => a.id === id)
+            if (idx < 0) return
+            Store.state.applications.splice(idx, 1, { ...Store.state.applications[idx], status })
+            Store.persist('applications')
+            Store.toast('success', '已更新报名状态')
+          }
+
+          const back = () => router.push('/manage')
+          return {
+            club,
+            canManage,
+            edit,
+            interestTags,
+            skillTags,
+            timePrefs,
+            toggle,
+            pickCover,
+            saveClub,
+            acts,
+            actOpen,
+            actEdit,
+            openNew,
+            openEditAct,
+            saveAct,
+            delAct,
+            apps,
+            updateApp,
+            fmtDT,
+            back,
+          }
+        },
+        template: `
+          <div class="container">
+            <div v-if="!club" class="empty"><div class="h3">社团不存在</div></div>
+            <div v-else-if="!canManage" class="empty">
+              <div class="h3">无权限访问</div>
+              <div class="k" style="margin-top:6px">你不是该社团的管理者。</div>
+              <div class="row" style="margin-top:12px"><button class="btn" @click="back">返回</button></div>
+            </div>
+            <div v-else class="grid" style="grid-template-columns:1fr;gap:16px">
+              <div class="card">
+                <div class="card-h"><div class="h2">社团信息编辑</div><div class="k" style="margin-top:6px">修改名称、简介、封面、标签、时间偏好、需求技能、招新信息</div></div>
+                <div class="card-b">
+                  <div class="grid" style="gap:10px">
+                    <label class="k">社团名称</label>
+                    <input class="input" v-model="edit.name" />
+                    <label class="k">简介</label>
+                    <textarea class="input" rows="3" v-model="edit.description"></textarea>
+                    <label class="k">封面图（可上传 Base64）</label>
+                    <input class="input" type="file" accept="image/*" @change="pickCover" />
+                    <div class="cover" style="height:140px" v-if="edit.cover"><img :src="edit.cover" alt="cover" /></div>
+                    <label class="k">标签（多选）</label>
+                    <div class="row"><span v-for="t in interestTags" :key="t" class="chip" :class="{on:edit.tags.includes(t)}" @click="toggle(edit.tags,t)">{{t}}</span></div>
+                    <label class="k">活动时间偏好</label>
+                    <select class="input" v-model="edit.timePreference">
+                      <option v-for="t in timePrefs" :key="t" :value="t">{{t}}</option>
+                    </select>
+                    <label class="k">需求技能（多选）</label>
+                    <div class="row"><span v-for="t in skillTags" :key="t" class="chip" :class="{on:edit.skillsRequired.includes(t)}" @click="toggle(edit.skillsRequired,t)">{{t}}</span></div>
+                    <label class="k">招新要求（独立于简介）</label>
+                    <textarea class="input" rows="3" v-model="edit.recruitmentInfo"></textarea>
+                    <div class="row" style="justify-content:flex-end">
+                      <button class="btn btn-primary" @click="saveClub">保存</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card">
+                <div class="card-h"><div class="h2">活动管理</div><div class="k" style="margin-top:6px">创建/编辑/删除活动</div></div>
+                <div class="card-b">
+                  <div class="row" style="justify-content:space-between">
+                    <div class="k">共 {{acts.length}} 条</div>
+                    <button class="btn btn-primary" @click="openNew">创建新活动</button>
+                  </div>
+                  <div class="hr"></div>
+                  <div v-if="acts.length===0" class="empty"><div class="h3">暂无活动</div></div>
+                  <div v-else class="list">
+                    <div v-for="a in acts" :key="a.id" class="card" style="box-shadow:none">
+                      <div class="card-b">
+                        <div class="row" style="justify-content:space-between">
+                          <div>
+                            <div class="h3">{{a.name}}</div>
+                            <div class="k" style="margin-top:4px">{{fmtDT(a.time)}} · {{a.location}} · {{a.participationType}}</div>
+                          </div>
+                          <div class="row">
+                            <button class="btn" @click="openEditAct(a)">编辑</button>
+                            <button class="btn btn-danger" @click="delAct(a.id)">删除</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card">
+                <div class="card-h"><div class="h2">报名列表</div><div class="k" style="margin-top:6px">更新录取状态（待审核/已录取/拒绝）</div></div>
+                <div class="card-b">
+                  <div v-if="apps.length===0" class="empty"><div class="h3">暂无报名</div></div>
+                  <div v-else>
+                    <table class="table">
+                      <tbody>
+                        <tr v-for="a in apps" :key="a.id" class="tr">
+                          <td class="td">
+                            <div class="h3">{{a.name || '报名者'}} <span class="badge">{{a.studentId}}</span></div>
+                            <div class="k" style="margin-top:4px">{{a.phone}} · {{fmtDT(a.applyTime)}}</div>
+                          </td>
+                          <td class="td" style="width:140px"><span class="badge" :class="a.status==='已录取'?'ok':(a.status==='拒绝'?'danger':'warn')">{{a.status}}</span></td>
+                          <td class="td" style="width:300px;text-align:right">
+                            <button class="btn" @click="updateApp(a.id,'待审核')">待审核</button>
+                            <button class="btn" style="margin-left:8px" @click="updateApp(a.id,'已录取')">录取</button>
+                            <button class="btn btn-danger" style="margin-left:8px" @click="updateApp(a.id,'拒绝')">拒绝</button>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+
+              <Modal :open="actOpen" title="编辑活动" @close="actOpen=false">
+                <div class="grid" style="gap:10px">
+                  <label class="k">活动名称 *</label>
+                  <input class="input" v-model="actEdit.name" />
+                  <label class="k">时间 *</label>
+                  <input class="input" type="datetime-local" v-model="actEdit.time" />
+                  <label class="k">地点 *</label>
+                  <input class="input" v-model="actEdit.location" />
+                  <label class="k">主题</label>
+                  <input class="input" v-model="actEdit.theme" />
+                  <label class="k">简介</label>
+                  <textarea class="input" rows="3" v-model="actEdit.description"></textarea>
+                  <label class="k">参与方式</label>
+                  <select class="input" v-model="actEdit.participationType">
+                    <option value="公开">公开</option>
+                    <option value="需报名">需报名</option>
+                  </select>
+                  <div class="row" style="justify-content:flex-end">
+                    <button class="btn" @click="actOpen=false">取消</button>
+                    <button class="btn btn-primary" style="margin-left:8px" @click="saveAct">保存</button>
+                  </div>
+                </div>
+              </Modal>
+            </div>
+          </div>
+        `,
+      }
+
+      const AuditPage = {
+        components: { Modal },
+        setup() {
+          const pending = computed(() => Store.state.users.filter((u) => u.authStatus === '待审核'))
+          const clubs = computed(() => Store.state.clubs)
+          const open = ref(false)
+          const pickUser = ref(null)
+          const assign = reactive({ clubIds: [], createName: '' })
+
+          const openApprove = (u) => {
+            pickUser.value = u
+            assign.clubIds = []
+            assign.createName = ''
+            open.value = true
+          }
+
+          const approve = () => {
+            const u = pickUser.value
+            if (!u) return
+            const idx = Store.state.users.findIndex((x) => x.id === u.id)
+            if (idx < 0) return
+
+            const updated = { ...u, authStatus: '已认证' }
+            Store.state.users.splice(idx, 1, updated)
+
+            if (u.role === '社团管理者') {
+              let clubIds = [...assign.clubIds]
+              if (assign.createName.trim()) {
+                const id = uid()
+                const c = {
+                  id,
+                  name: assign.createName.trim(),
+                  description: '新创建社团（演示）',
+                  cover: '',
+                  tags: ['公益'],
+                  timePreference: '周末白天',
+                  skillsRequired: ['运营'],
+                  recruitmentInfo: '招新中：欢迎加入！',
+                  managerIds: [u.id],
+                }
+                Store.state.clubs.push(c)
+                clubIds.push(id)
+              }
+
+              clubIds = Array.from(new Set(clubIds))
+              Store.state.users.splice(idx, 1, { ...updated, managedClubs: clubIds })
+              clubIds.forEach((cid) => {
+                const cidx = Store.state.clubs.findIndex((c) => c.id === cid)
+                if (cidx >= 0) {
+                  const c = Store.state.clubs[cidx]
+                  const mids = Array.from(new Set([...(c.managerIds || []), u.id]))
+                  Store.state.clubs.splice(cidx, 1, { ...c, managerIds: mids })
+                }
+              })
+              Store.persist('clubs')
+            }
+
+            Store.persist('users')
+            open.value = false
+            Store.toast('success', '已通过审核', `${u.name} 已认证`)
+          }
+
+          const deny = (u) => {
+            const idx = Store.state.users.findIndex((x) => x.id === u.id)
+            if (idx < 0) return
+            Store.state.users.splice(idx, 1, { ...u, authStatus: '拒绝' })
+            Store.persist('users')
+            Store.toast('success', '已拒绝', u.name)
+          }
+
+          const reset = () => {
+            Store.reset()
+            Store.toast('success', '数据已重置', '已恢复预置数据')
+          }
+
+          return { pending, clubs, open, pickUser, assign, openApprove, approve, deny, reset }
+        },
+        template: `
+          <div class="container">
+            <div class="card">
+              <div class="card-h"><div class="h2">审核中心（演示）</div><div class="k" style="margin-top:6px">仅 admin 账号可见，用于模拟实名认证通过与社团管理授权</div></div>
+              <div class="card-b">
+                <div class="row" style="justify-content:space-between">
+                  <div class="k">待审核用户：{{pending.length}}</div>
+                  <button class="btn btn-danger" @click="reset">重置数据</button>
+                </div>
+                <div class="hr"></div>
+                <div v-if="pending.length===0" class="empty">
+                  <div class="h3">暂无待审核用户</div>
+                  <div class="k" style="margin-top:6px">你可以先去注册一个新账号，然后回来审核。</div>
+                </div>
+                <div v-else class="list">
+                  <div v-for="u in pending" :key="u.id" class="card" style="box-shadow:none">
+                    <div class="card-b">
+                      <div class="row" style="justify-content:space-between;align-items:flex-start">
+                        <div>
+                          <div class="h3">{{u.name}} <span class="badge">{{u.studentId}}</span></div>
+                          <div class="k" style="margin-top:6px">角色：{{u.role}} · 联系方式：{{u.phone}}</div>
+                          <div class="row" style="margin-top:8px;gap:8px">
+                            <span class="badge warn">待审核</span>
+                            <span class="badge" v-if="u.idPhotoBase64">已上传证件</span>
+                            <span class="badge" v-if="u.role==='社团管理者' && u.managerProofBase64">已上传负责人证明</span>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <button class="btn" @click="openApprove(u)">通过</button>
+                          <button class="btn btn-danger" @click="deny(u)">拒绝</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <Modal :open="open" title="通过审核" @close="open=false">
+              <template #subtitle>社团管理者可在审核通过时关联社团（可多选/可新建）</template>
+              <div v-if="pickUser" class="grid" style="gap:10px">
+                <div class="row" style="justify-content:space-between">
+                  <div class="h3">{{pickUser.name}}（{{pickUser.studentId}}）</div>
+                  <span class="badge">{{pickUser.role}}</span>
+                </div>
+                <div v-if="pickUser.role==='社团管理者'" class="grid" style="gap:10px">
+                  <div class="k">关联社团（多选）</div>
+                  <div class="row">
+                    <label v-for="c in clubs" :key="c.id" class="chip" :class="{on:assign.clubIds.includes(c.id)}" style="cursor:pointer">
+                      <input type="checkbox" :value="c.id" v-model="assign.clubIds" style="display:none" />
+                      {{c.name}}
+                    </label>
+                  </div>
+                  <div class="k">或新建社团</div>
+                  <input class="input" v-model="assign.createName" placeholder="输入新社团名称（可选）" />
+                </div>
+                <div class="row" style="justify-content:flex-end;margin-top:6px">
+                  <button class="btn" @click="open=false">取消</button>
+                  <button class="btn btn-primary" style="margin-left:8px" @click="approve">确认通过</button>
+                </div>
+              </div>
+            </Modal>
+          </div>
+        `,
+      }
+
+      const routes = [
+        { path: '/', component: HomePage, meta: { auth: true, verified: true } },
+        { path: '/login', component: LoginPage },
+        { path: '/register', component: RegisterPage },
+        { path: '/pending', component: RequireVerified, meta: { auth: true } },
+        { path: '/match', component: MatchPage, meta: { auth: true, verified: true } },
+        { path: '/match/results', component: MatchResultsPage, meta: { auth: true, verified: true } },
+        { path: '/clubs/:clubId', component: ClubDetailPage, meta: { auth: true, verified: true } },
+        { path: '/my-applications', component: MyApplicationsPage, meta: { auth: true, verified: true } },
+        { path: '/manage', component: ManagePage, meta: { auth: true, verified: true, manager: true } },
+        { path: '/manage/:clubId', component: ManageClubPage, meta: { auth: true, verified: true, manager: true } },
+        { path: '/audit', component: AuditPage, meta: { auth: true, verified: true, auditor: true } },
+      ]
+
+      const router = createRouter({ history: createWebHashHistory(), routes })
+
+      router.beforeEach((to) => {
+        const u = Store.currentUser.value
+        if (to.meta?.auth && !u) return '/login'
+        if (to.meta?.verified && u && u.authStatus !== '已认证') return '/pending'
+        if (to.meta?.auditor && u && u.studentId !== 'admin') return '/'
+        if (to.meta?.manager && u && (u.managedClubs || []).length === 0) {
+          Store.toast('danger', '无权限', '你没有社团管理权限')
+          return '/'
+        }
+        return true
+      })
+
+      const App = {
+        components: { NavBar, RouterView, Toasts },
+        setup() {
+          const onStorage = (e) => {
+            if (!e.key) return
+            if (Object.values(LS.k).includes(e.key)) Store.loadAll()
+          }
+          onMounted(() => window.addEventListener('storage', onStorage))
+          onBeforeUnmount(() => window.removeEventListener('storage', onStorage))
+          return { s: Store.state }
+        },
+        template: `
+          <NavBar />
+          <RouterView />
+          <Toasts :items="s.toasts" />
+        `,
+      }
+
+      createApp(App).use(router).mount('#app')
+    </script>
+  </body>
+</html>
